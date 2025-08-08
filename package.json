@@ -42,7 +42,18 @@
     "branch:setup": "./setup-branches.sh",
     "branch:status": "git submodule foreach 'echo \"=== $name ===\" && git branch -a'",
     "branch:develop": "git submodule foreach 'git checkout develop'",
-    "branch:main": "git submodule foreach 'git checkout main'"
+    "branch:main": "git submodule foreach 'git checkout main'",
+    "branch:operations": "./branch-operations.sh",
+    "branch:list": "git submodule foreach 'echo \"=== $name ===\" && git branch -a && echo \"\"'",
+    "branch:switch": "echo 'Usage: npm run branch:switch -- <branch-name>' && git submodule foreach 'if git show-ref --verify --quiet refs/heads/$1; then git checkout $1; echo \"✅ Switched to $1 in $name\"; else echo \"❌ Branch $1 not found in $name\"; fi'",
+    "branch:create": "echo 'Usage: npm run branch:create -- <new-branch-name>' && git submodule foreach 'if ! git show-ref --verify --quiet refs/heads/$1; then git checkout -b $1; echo \"✅ Created and switched to $1 in $name\"; else echo \"⚠️ Branch $1 already exists in $name\"; fi'",
+    "branch:merge": "echo 'Usage: npm run branch:merge -- <source-branch> <target-branch>' && git submodule foreach 'if git show-ref --verify --quiet refs/heads/$1 && git show-ref --verify --quiet refs/heads/$2; then git checkout $2 && git merge $1; echo \"✅ Merged $1 into $2 in $name\"; else echo \"❌ One or both branches not found in $name\"; fi'",
+    "branch:push": "git submodule foreach 'current_branch=$(git branch --show-current) && git push origin $current_branch && echo \"✅ Pushed $current_branch in $name\"'",
+    "branch:pull": "git submodule foreach 'current_branch=$(git branch --show-current) && git pull origin $current_branch && echo \"✅ Pulled $current_branch in $name\"'",
+    "branch:stash": "git submodule foreach 'if [ -n \"$(git status --porcelain)\" ]; then git stash push -m \"Auto-stash from monorepo\"; echo \"✅ Stashed changes in $name\"; else echo \"No changes to stash in $name\"; fi'",
+    "branch:stash:apply": "git submodule foreach 'if git stash list | grep -q .; then git stash pop; echo \"✅ Applied stashed changes in $name\"; else echo \"No stashed changes in $name\"; fi'",
+    "branch:diff": "echo 'Usage: npm run branch:diff -- <branch1> <branch2>' && git submodule foreach 'if git show-ref --verify --quiet refs/heads/$1 && git show-ref --verify --quiet refs/heads/$2; then echo \"=== $name ===\" && git diff --stat $1..$2; else echo \"❌ One or both branches not found in $name\"; fi'",
+    "branch:history": "echo 'Usage: npm run branch:history -- <branch-name> <limit>' && git submodule foreach 'if git show-ref --verify --quiet refs/heads/$1; then echo \"=== $name ===\" && git log --oneline -n ${2:-10} $1; else echo \"❌ Branch $1 not found in $name\"; fi'"
   },
   "devDependencies": {
     "concurrently": "^8.2.2",
