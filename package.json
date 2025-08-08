@@ -1,0 +1,65 @@
+{
+  "name": "pacdocsign-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "PacDocSign Monorepo - A comprehensive document signing platform using git submodules",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm run dev:client\" \"npm run dev:api\" \"npm run dev:signers\" \"npm run dev:dashboard\"",
+    "dev:client": "cd packages/client && npm run start",
+    "dev:api": "cd packages/api && npm run dev",
+    "dev:signers": "cd packages/signers && npm run start",
+    "dev:dashboard": "cd packages/dashboard && npm run start",
+    "build": "npm run build:client && npm run build:api && npm run build:signers && npm run build:dashboard",
+    "build:client": "cd packages/client && npm run build",
+    "build:api": "cd packages/api && npm run build",
+    "build:signers": "cd packages/signers && npm run build",
+    "build:dashboard": "cd packages/dashboard && npm run build",
+    "test": "npm run test:client && npm run test:api && npm run test:signers && npm run test:dashboard",
+    "test:client": "cd packages/client && npm run test",
+    "test:api": "cd packages/api && npm run test",
+    "test:signers": "cd packages/signers && npm run test",
+    "test:dashboard": "cd packages/dashboard && npm run test",
+    "lint": "npm run lint:client && npm run lint:api && npm run lint:signers && npm run lint:dashboard",
+    "lint:client": "cd packages/client && npm run lint",
+    "lint:api": "cd packages/api && npm run lint",
+    "lint:signers": "cd packages/signers && npm run lint",
+    "lint:dashboard": "cd packages/dashboard && npm run lint",
+    "clean": "rm -rf node_modules packages/*/node_modules packages/*/build packages/*/dist",
+    "install:all": "npm install && npm run install:packages",
+    "install:packages": "cd packages/client && npm install && cd ../api && npm install && cd ../signers && npm install && cd ../dashboard && npm install",
+    "deploy": "npm run build && npm run deploy:client && npm run deploy:api && npm run deploy:signers && npm run deploy:dashboard",
+    "deploy:client": "cd packages/client && npm run deploy",
+    "deploy:api": "cd packages/api && npm run deploy",
+    "deploy:signers": "cd packages/signers && npm run deploy",
+    "deploy:dashboard": "cd packages/dashboard && npm run deploy",
+    "submodule:init": "git submodule update --init --recursive",
+    "submodule:update": "git submodule update --remote --recursive",
+    "submodule:status": "git submodule status"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "husky": "^8.0.3",
+    "lint-staged": "^15.2.0"
+  },
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=8.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-org/pacdocsign-monorepo.git"
+  },
+  "keywords": [
+    "monorepo",
+    "document-signing",
+    "react",
+    "nodejs",
+    "typescript",
+    "git-submodules"
+  ],
+  "author": "iMationsoft",
+  "license": "UNLICENSED"
+}

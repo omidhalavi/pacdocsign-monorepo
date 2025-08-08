@@ -1,0 +1,23 @@
+# PacDocSign Monorepo - Git Submodules Configuration
+# This file will be automatically generated when you add submodules
+
+# Example submodule configurations (uncomment and modify as needed):
+# [submodule "packages/client"]
+# 	path = packages/client
+# 	url = https://github.com/your-org/pacdocv2-client.git
+# 	branch = develop
+
+# [submodule "packages/api"]
+# 	path = packages/api
+# 	url = https://github.com/your-org/pacdocv2-api.git
+# 	branch = develop
+
+# [submodule "packages/signers"]
+# 	path = packages/signers
+# 	url = https://github.com/your-org/pacdocv2-signers.git
+# 	branch = develop
+
+# [submodule "packages/dashboard"]
+# 	path = packages/dashboard
+# 	url = https://github.com/your-org/pacdocv2-dashboard.git
+# 	branch = main
