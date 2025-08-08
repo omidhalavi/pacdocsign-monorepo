@@ -23,7 +23,7 @@ This monorepo contains the following packages:
 
 1. **Clone the monorepo with submodules:**
    ```bash
-   git clone --recursive https://github.com/your-org/pacdocsign-monorepo.git
+   git clone --recursive https://github.com/omidhalavi/pacdocsign-monorepo.git
    cd pacdocsign-monorepo
    ```
 
@@ -124,7 +124,8 @@ pacdocsign-monorepo/
 ├── SETUP.md            # Setup guide
 ├── add-submodules.sh   # Interactive submodule setup script
 ├── ensure-branches.sh  # Ensure branches exist script
-└── setup-branches.sh   # Comprehensive branch setup script
+├── setup-branches.sh   # Comprehensive branch setup script
+└── branch-operations.sh # Interactive branch operations script
 ```
 
 ## 🔧 Git Submodules Management
@@ -211,6 +212,11 @@ npm run branch:develop
 **Switch all submodules to main branch:**
 ```bash
 npm run branch:main
+```
+
+**Interactive branch operations:**
+```bash
+npm run branch:operations
 ```
 
 ### Branch Workflow
