@@ -37,6 +37,11 @@ This monorepo contains the following packages:
    npm run install:all
    ```
 
+4. **Ensure all branches exist:**
+   ```bash
+   npm run branch:ensure
+   ```
+
 ### Development
 
 **Start all services in development mode:**
@@ -114,8 +119,12 @@ pacdocsign-monorepo/
 │   ├── signers/         # React signers application
 │   └── dashboard/       # React admin dashboard
 ├── package.json         # Root package.json with workspace config
-├── setup-submodules.sh  # Script to set up git submodules
-└── README.md           # This file
+├── .gitmodules          # Git submodules configuration
+├── README.md           # This file
+├── SETUP.md            # Setup guide
+├── add-submodules.sh   # Interactive submodule setup script
+├── ensure-branches.sh  # Ensure branches exist script
+└── setup-branches.sh   # Comprehensive branch setup script
 ```
 
 ## 🔧 Git Submodules Management
@@ -165,6 +174,67 @@ npm run submodule:init
    # From the root directory
    git add packages/client
    git commit -m "Update client submodule"
+   git push origin main
+   ```
+
+## 🌿 Branch Management
+
+### Branch Strategy
+
+Each package maintains both `main` and `develop` branches:
+
+- **`main`** - Production-ready code
+- **`develop`** - Development and feature integration
+
+### Branch Management Commands
+
+**Ensure all submodules have both branches:**
+```bash
+npm run branch:ensure
+```
+
+**Comprehensive branch setup (with push options):**
+```bash
+npm run branch:setup
+```
+
+**Check branch status across all submodules:**
+```bash
+npm run branch:status
+```
+
+**Switch all submodules to develop branch:**
+```bash
+npm run branch:develop
+```
+
+**Switch all submodules to main branch:**
+```bash
+npm run branch:main
+```
+
+### Branch Workflow
+
+1. **Development workflow:**
+   ```bash
+   # Switch all submodules to develop
+   npm run branch:develop
+   
+   # Make changes in individual submodules
+   cd packages/client
+   # ... make changes ...
+   git add . && git commit -m "Feature: new functionality"
+   git push origin develop
+   ```
+
+2. **Release workflow:**
+   ```bash
+   # Switch all submodules to main
+   npm run branch:main
+   
+   # Merge develop into main for each submodule
+   cd packages/client
+   git merge develop
    git push origin main
    ```
 

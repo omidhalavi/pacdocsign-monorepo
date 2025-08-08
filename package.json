@@ -37,7 +37,12 @@
     "deploy:dashboard": "cd packages/dashboard && npm run deploy",
     "submodule:init": "git submodule update --init --recursive",
     "submodule:update": "git submodule update --remote --recursive",
-    "submodule:status": "git submodule status"
+    "submodule:status": "git submodule status",
+    "branch:ensure": "./ensure-branches.sh",
+    "branch:setup": "./setup-branches.sh",
+    "branch:status": "git submodule foreach 'echo \"=== $name ===\" && git branch -a'",
+    "branch:develop": "git submodule foreach 'git checkout develop'",
+    "branch:main": "git submodule foreach 'git checkout main'"
   },
   "devDependencies": {
     "concurrently": "^8.2.2",

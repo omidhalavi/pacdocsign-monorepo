@@ -8,10 +8,12 @@
 - Git submodules configuration files
 - Comprehensive README and documentation
 - Setup scripts for easy submodule management
+- Branch management scripts and tools
 
 ⏳ **Next Steps:**
 - Add git submodules for each repository
 - Install dependencies
+- Ensure all branches exist
 - Test the setup
 
 ## 🚀 Quick Setup Instructions
@@ -46,15 +48,25 @@ git submodule add -b main <dashboard-repo-url> packages/dashboard
 git submodule update --init --recursive
 ```
 
-### Step 3: Install Dependencies
+### Step 3: Ensure All Branches Exist
+```bash
+npm run branch:ensure
+```
+
+This will ensure that all submodules have both `main` and `develop` branches available.
+
+### Step 4: Install Dependencies
 ```bash
 npm run install:all
 ```
 
-### Step 4: Test the Setup
+### Step 5: Test the Setup
 ```bash
 # Check submodule status
 npm run submodule:status
+
+# Check branch status
+npm run branch:status
 
 # Start development servers
 npm run dev
@@ -76,7 +88,8 @@ pacdocsign-monorepo/
 ├── README.md           # Comprehensive documentation
 ├── SETUP.md            # This setup guide
 ├── add-submodules.sh   # Interactive submodule setup script
-└── setup-submodules.sh # Manual submodule setup script
+├── ensure-branches.sh  # Ensure branches exist script
+└── setup-branches.sh   # Comprehensive branch setup script
 ```
 
 ## 🔧 Git Submodules Management
@@ -117,6 +130,67 @@ git submodule update --init --recursive
    # From the root directory
    git add packages/client
    git commit -m "Update client submodule"
+   git push origin main
+   ```
+
+## 🌿 Branch Management
+
+### Branch Strategy
+
+Each package maintains both `main` and `develop` branches:
+
+- **`main`** - Production-ready code
+- **`develop`** - Development and feature integration
+
+### Branch Management Commands
+
+**Ensure all submodules have both branches:**
+```bash
+npm run branch:ensure
+```
+
+**Comprehensive branch setup (with push options):**
+```bash
+npm run branch:setup
+```
+
+**Check branch status across all submodules:**
+```bash
+npm run branch:status
+```
+
+**Switch all submodules to develop branch:**
+```bash
+npm run branch:develop
+```
+
+**Switch all submodules to main branch:**
+```bash
+npm run branch:main
+```
+
+### Branch Workflow
+
+1. **Development workflow:**
+   ```bash
+   # Switch all submodules to develop
+   npm run branch:develop
+   
+   # Make changes in individual submodules
+   cd packages/client
+   # ... make changes ...
+   git add . && git commit -m "Feature: new functionality"
+   git push origin develop
+   ```
+
+2. **Release workflow:**
+   ```bash
+   # Switch all submodules to main
+   npm run branch:main
+   
+   # Merge develop into main for each submodule
+   cd packages/client
+   git merge develop
    git push origin main
    ```
 
@@ -169,13 +243,17 @@ npm run lint
    npm run install:all
    ```
 
-3. **Permission denied on scripts:**
+3. **Branches missing:**
    ```bash
-   chmod +x add-submodules.sh
-   chmod +x setup-submodules.sh
+   npm run branch:ensure
    ```
 
-4. **Git hooks issues:**
+4. **Permission denied on scripts:**
+   ```bash
+   chmod +x add-submodules.sh ensure-branches.sh setup-branches.sh
+   ```
+
+5. **Git hooks issues:**
    ```bash
    git commit --no-verify -m "Your commit message"
    ```
@@ -188,13 +266,16 @@ If you encounter any issues during setup:
 2. Verify your repository URLs are correct
 3. Ensure you have the necessary permissions for all repositories
 4. Check that all branches exist in the remote repositories
+5. Run `npm run branch:ensure` to ensure all branches are available
 
 ## 🎉 Success Criteria
 
 You'll know the setup is complete when:
 
 - ✅ All submodules are added and initialized
+- ✅ All submodules have both `main` and `develop` branches
 - ✅ Dependencies are installed for all packages
 - ✅ `npm run dev` starts all services successfully
 - ✅ `npm run submodule:status` shows all submodules as up-to-date
+- ✅ `npm run branch:status` shows all branches exist
 - ✅ All packages can be built and tested individually
