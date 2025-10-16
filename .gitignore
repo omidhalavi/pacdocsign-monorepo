@@ -131,3 +131,4 @@ migration/test-results/
 
 # Package lock files in root (use submodule package-lock.json)
 package-lock.json
+migration/user-extraction-data.json
