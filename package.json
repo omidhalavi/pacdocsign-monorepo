@@ -3,9 +3,6 @@
   "version": "1.0.0",
   "private": true,
   "description": "PacDocSign Monorepo - A comprehensive document signing platform using git submodules",
-  "workspaces": [
-    "packages/*"
-  ],
   "scripts": {
     "dev": "concurrently \"npm run dev:client\" \"npm run dev:api\" \"npm run dev:signers\" \"npm run dev:dashboard\"",
     "dev:client": "cd packages/client && npm run start",

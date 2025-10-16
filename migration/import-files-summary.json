@@ -1,0 +1,25 @@
+{
+  "created": "2025-08-13T03:58:13.260Z",
+  "files": {
+    "employees": {
+      "file": "firebase-employees-import.json",
+      "totalUsers": 19,
+      "usersWithPasswords": 19,
+      "project": "pacdoc-employees"
+    },
+    "clients": {
+      "file": "firebase-clients-import.json",
+      "totalUsers": 1546,
+      "usersWithPasswords": 1545,
+      "project": "pacdoc-clients"
+    },
+    "signers": {
+      "file": "firebase-signers-import.json",
+      "totalUsers": 58290,
+      "usersWithPasswords": 19614,
+      "project": "pacdoc-signers"
+    }
+  },
+  "totalOriginalUsers": 59855,
+  "totalImportableUsers": 21178
+}

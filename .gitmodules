@@ -21,3 +21,19 @@
 # 	path = packages/dashboard
 # 	url = https://github.com/your-org/pacdocv2-dashboard.git
 # 	branch = main
+[submodule "packages/client"]
+	path = packages/client
+	url = https://github.com/omidhalavi/pacdocv2-client
+	branch = develop
+[submodule "packages/api"]
+	path = packages/api
+	url = https://github.com/omidhalavi/pacdocv2-api
+	branch = develop
+[submodule "packages/signers"]
+	path = packages/signers
+	url = https://github.com/omidhalavi/pacdocv2-signers
+	branch = develop
+[submodule "packages/dashboard"]
+	path = packages/dashboard
+	url = https://github.com/omidhalavi/pacdocv2-dashboard
+	branch = main

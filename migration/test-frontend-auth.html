@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Firebase Authentication Test</title>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        .test-section { margin: 20px 0; padding: 20px; border: 1px solid #ddd; border-radius: 8px; }
+        .success { background-color: #d4edda; border-color: #c3e6cb; color: #155724; }
+        .error { background-color: #f8d7da; border-color: #f5c6cb; color: #721c24; }
+        button { padding: 10px 15px; margin: 5px; cursor: pointer; }
+        input { padding: 8px; margin: 5px; width: 250px; }
+        #results { margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <h1>🧪 Firebase Authentication Test</h1>
+    
+    <div class="test-section">
+        <h3>Dashboard (Employees) - pacdoc-dashboard-prod</h3>
+        <input type="email" id="dashboardEmail" placeholder="e.g., omid+employee@excersys.com" />
+        <button onclick="testDashboardAuth()">Test Dashboard Auth</button>
+        <div id="dashboardResult"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>Clients - pacdoc-clients-prod</h3>
+        <input type="email" id="clientEmail" placeholder="e.g., fred.simab+client@pacdocsign.com" />
+        <button onclick="testClientAuth()">Test Client Auth</button>
+        <div id="clientResult"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>Signers - pacdoc-signers-prod</h3>
+        <input type="email" id="signerEmail" placeholder="e.g., ohalavi+signer@me.com" />
+        <button onclick="testSignerAuth()">Test Signer Auth</button>
+        <div id="signerResult"></div>
+    </div>
+
+    <script>
+        // Firebase Configs
+        const dashboardConfig = {
+            apiKey: 'AIzaSyDKB_EgWK7DU9cijR0FtnVCJ_4ZcUJJRsI',
+            authDomain: 'pacdoc-dashboard-prod.firebaseapp.com',
+            projectId: 'pacdoc-dashboard-prod',
+            storageBucket: 'pacdoc-dashboard-prod.firebasestorage.app',
+            messagingSenderId: '152371101264',
+            appId: '1:152371101264:web:04f410c80dabf44b78db55'
+        };
+
+        const clientConfig = {
+            apiKey: 'AIzaSyB2TL6c1TIiA4bIXCZRb9TAjRDncDhxTr4',
+            authDomain: 'pacdoc-clients-prod.firebaseapp.com',
+            projectId: 'pacdoc-clients-prod',
+            storageBucket: 'pacdoc-clients-prod.firebasestorage.app',
+            messagingSenderId: '268400274765',
+            appId: '1:268400274765:web:3b36ca9c75966561be5b04'
+        };
+
+        const signerConfig = {
+            apiKey: 'AIzaSyDqnJMNCSKzkN8DXavJDldUuaXLfiyWs24',
+            authDomain: 'pacdoc-signers-prod.firebaseapp.com',
+            projectId: 'pacdoc-signers-prod',
+            storageBucket: 'pacdoc-signers-prod.firebasestorage.app',
+            messagingSenderId: '1038679241761',
+            appId: '1:1038679241761:web:cc745e64ba1ffff2261f60'
+        };
+
+        // Initialize Firebase apps
+        const dashboardApp = firebase.initializeApp(dashboardConfig, 'dashboard');
+        const clientApp = firebase.initializeApp(clientConfig, 'clients');
+        const signerApp = firebase.initializeApp(signerConfig, 'signers');
+
+        async function testDashboardAuth() {
+            const email = document.getElementById('dashboardEmail').value;
+            const resultDiv = document.getElementById('dashboardResult');
+            
+            try {
+                const auth = firebase.auth(dashboardApp);
+                await auth.sendSignInLinkToEmail(email, {
+                    url: 'https://pacdoc-dashboard-prod.web.app/login',
+                    handleCodeInApp: true,
+                });
+                
+                resultDiv.innerHTML = `<div class="success">✅ Sign-in link sent to ${email}! Check your email.</div>`;
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">❌ Error: ${error.message}</div>`;
+            }
+        }
+
+        async function testClientAuth() {
+            const email = document.getElementById('clientEmail').value;
+            const resultDiv = document.getElementById('clientResult');
+            
+            try {
+                const auth = firebase.auth(clientApp);
+                await auth.sendSignInLinkToEmail(email, {
+                    url: 'https://pacdoc-clients-prod.web.app/login',
+                    handleCodeInApp: true,
+                });
+                
+                resultDiv.innerHTML = `<div class="success">✅ Sign-in link sent to ${email}! Check your email.</div>`;
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">❌ Error: ${error.message}</div>`;
+            }
+        }
+
+        async function testSignerAuth() {
+            const email = document.getElementById('signerEmail').value;
+            const resultDiv = document.getElementById('signerResult');
+            
+            try {
+                const auth = firebase.auth(signerApp);
+                await auth.sendSignInLinkToEmail(email, {
+                    url: 'https://signers.pacdocsign.com/login',
+                    handleCodeInApp: true,
+                });
+                
+                resultDiv.innerHTML = `<div class="success">✅ Sign-in link sent to ${email}! Check your email.</div>`;
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">❌ Error: ${error.message}</div>`;
+            }
+        }
+    </script>
+</body>
+</html>
