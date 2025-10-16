@@ -61,3 +61,5 @@ Migrate from custom Firebase + JWT authentication to Google Identity Platform wi
 
 All estimates assume Claude Code assistance for implementation, reducing traditional development time by approximately 58%.
 
+
+

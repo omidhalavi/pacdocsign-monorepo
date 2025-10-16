@@ -47,7 +47,8 @@
       "html"
     ],
     "setupFilesAfterEnv": [
-      "<rootDir>/test/setup.ts"
+      "<rootDir>/setup.ts"
     ]
   }
 }
+

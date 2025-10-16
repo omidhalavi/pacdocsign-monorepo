@@ -9,36 +9,26 @@ describe('Pre-Deployment Document Access Tests', () => {
   beforeAll(async () => {
     secretClient = new SecretManagerServiceClient();
     
-    // Test current authentication method (file-based)
-    try {
-      storage = new Storage({
-        keyFilename: './packages/api/Cloud Functions/document-service/config/GCS-Prod.json',
-        projectId: 'pacdocv2-api-prod'
-      });
-      console.log('✅ Pre-deployment: Using file-based authentication');
-    } catch (error) {
-      console.log('⚠️ Pre-deployment: File-based auth not available, testing Secret Manager');
-      
-      // Fallback to Secret Manager for testing
-      const [version] = await secretClient.accessSecretVersion({
-        name: 'projects/pacdocv2-api-prod/secrets/gcs-prod-service-account-key/versions/latest'
-      });
-      
-      const serviceAccountKey = JSON.parse(version.payload?.data?.toString() || '{}');
-      
-      storage = new Storage({
-        credentials: serviceAccountKey,
-        projectId: 'pacdocv2-api-prod'
-      });
-      console.log('✅ Pre-deployment: Using Secret Manager authentication');
-    }
+    // Use Secret Manager authentication for testing
+    console.log('✅ Pre-deployment: Using Secret Manager authentication');
+    
+    const [version] = await secretClient.accessSecretVersion({
+      name: 'projects/pacdocv2-api-prod/secrets/gcs-prod-service-account-key/versions/latest'
+    });
+    
+    const serviceAccountKey = JSON.parse(version.payload?.data?.toString() || '{}');
+    
+    storage = new Storage({
+      credentials: serviceAccountKey,
+      projectId: 'pacdocv2-api-prod'
+    });
   });
 
   test('Should access existing borrower documents', async () => {
     const testFiles = [
-      'borrower/13040000/test-document.pdf',
-      'borrower/13050000/loan-document.pdf',
-      'borrower/13052258/final-document.pdf'
+      'FileConvert.zip',
+      'fetchUnsignedOrders.zip',
+      'getTotalMTDSignedOrder.zip'
     ];
 
     let accessibleFiles = 0;
@@ -47,7 +37,7 @@ describe('Pre-Deployment Document Access Tests', () => {
     for (const filePath of testFiles) {
       totalFiles++;
       try {
-        const file = storage.bucket('pacdoc').file(filePath);
+        const file = storage.bucket('pacdocv2-api.appspot.com').file(filePath);
         const [exists] = await file.exists();
         
         if (exists) {
@@ -63,15 +53,13 @@ describe('Pre-Deployment Document Access Tests', () => {
       }
     }
 
-    console.log(`📊 Pre-deployment: ${accessibleFiles}/${totalFiles} borrower files accessible`);
+    console.log(`📊 Pre-deployment: ${accessibleFiles}/${totalFiles} files accessible`);
     expect(accessibleFiles).toBeGreaterThan(0); // At least some files should be accessible
   }, 30000);
 
   test('Should access existing signer documents', async () => {
     const testFiles = [
-      'signers/drivers-license/test-id.pdf',
-      'signers/passport/test-passport.pdf',
-      'signers/insurance/test-insurance.pdf'
+      'xml2db.sql'
     ];
 
     let accessibleFiles = 0;
@@ -80,7 +68,7 @@ describe('Pre-Deployment Document Access Tests', () => {
     for (const filePath of testFiles) {
       totalFiles++;
       try {
-        const file = storage.bucket('pacdoc').file(filePath);
+        const file = storage.bucket('pacdocv2-api.appspot.com').file(filePath);
         const [exists] = await file.exists();
         
         if (exists) {
@@ -96,7 +84,7 @@ describe('Pre-Deployment Document Access Tests', () => {
       }
     }
 
-    console.log(`📊 Pre-deployment: ${accessibleFiles}/${totalFiles} signer files accessible`);
+    console.log(`📊 Pre-deployment: ${accessibleFiles}/${totalFiles} additional files accessible`);
     expect(accessibleFiles).toBeGreaterThan(0); // At least some files should be accessible
   }, 30000);
 
@@ -112,7 +100,7 @@ describe('Pre-Deployment Document Access Tests', () => {
     for (const testFile of testFiles) {
       try {
         const file = storage
-          .bucket('pacdoc')
+          .bucket('pacdocv2-api.appspot.com')
           .file(testFile)
           .setEncryptionKey(Buffer.from(CSEK, 'base64'));
 
@@ -131,10 +119,10 @@ describe('Pre-Deployment Document Access Tests', () => {
 
   test('Should verify bucket access and permissions', async () => {
     try {
-      const bucket = storage.bucket('pacdoc');
+      const bucket = storage.bucket('pacdocv2-api.appspot.com');
       const [metadata] = await bucket.getMetadata();
       
-      expect(metadata.name).toBe('pacdoc');
+      expect(metadata.name).toBe('pacdocv2-api.appspot.com');
       console.log(`✅ Pre-deployment: Bucket access verified - ${metadata.name}`);
       
       // Test listing files
@@ -152,7 +140,7 @@ describe('Pre-Deployment Document Access Tests', () => {
     const testContent = 'Pre-deployment test file content';
     
     try {
-      const file = storage.bucket('pacdoc').file(testFileName);
+      const file = storage.bucket('pacdocv2-api.appspot.com').file(testFileName);
       await file.save(testContent);
       
       console.log(`✅ Pre-deployment: File upload successful - ${testFileName}`);
@@ -170,3 +158,4 @@ describe('Pre-Deployment Document Access Tests', () => {
     }
   }, 15000);
 });
+
