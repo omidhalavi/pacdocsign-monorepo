@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "moment-timezone": "^0.6.0",
+    "mysql2": "^3.15.3"
+  }
+}
