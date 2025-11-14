@@ -41,33 +41,65 @@ process_submodule() {
     echo "📝 Step 1: Pushing to develop branch"
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
     
+    # Stage all changes first (before checking out)
+    echo "📝 Staging changes..."
+    git add -A
+    
+    # Stash changes if we need to switch branches
+    CURRENT_BRANCH=$(git branch --show-current 2>/dev/null || echo "detached")
+    NEED_STASH=false
+    
     # Checkout or create develop branch
     if git show-ref --verify --quiet refs/heads/$DEVELOP_BRANCH; then
         echo "✅ Develop branch exists locally"
-        git checkout $DEVELOP_BRANCH
-        git pull origin $DEVELOP_BRANCH 2>/dev/null || echo "⚠️  Could not pull develop (might be first push)"
+        if [ "$CURRENT_BRANCH" != "$DEVELOP_BRANCH" ]; then
+            NEED_STASH=true
+        fi
     else
         echo "⚠️  Develop branch doesn't exist locally, checking out from origin..."
         if git show-ref --verify --quiet refs/remotes/origin/$DEVELOP_BRANCH; then
-            git checkout -b $DEVELOP_BRANCH origin/$DEVELOP_BRANCH
+            NEED_STASH=true
         else
             echo "⚠️  Develop branch doesn't exist in origin. Creating new branch from current state..."
+        fi
+    fi
+    
+    # Stash if needed, then checkout
+    if [ "$NEED_STASH" = true ] && [ "$CURRENT_BRANCH" != "$DEVELOP_BRANCH" ]; then
+        echo "💾 Stashing changes before branch switch..."
+        git stash push -m "Temporary stash for EXC-16" > /dev/null 2>&1
+        STASHED=true
+    else
+        STASHED=false
+    fi
+    
+    # Now checkout develop
+    if git show-ref --verify --quiet refs/heads/$DEVELOP_BRANCH; then
+        git checkout $DEVELOP_BRANCH
+        git pull origin $DEVELOP_BRANCH 2>/dev/null || echo "⚠️  Could not pull develop (might be first push)"
+    else
+        if git show-ref --verify --quiet refs/remotes/origin/$DEVELOP_BRANCH; then
+            git checkout -b $DEVELOP_BRANCH origin/$DEVELOP_BRANCH
+        else
             git checkout -b $DEVELOP_BRANCH
         fi
     fi
     
-    # Stage all changes
-    echo "📝 Staging changes..."
-    git add -A
+    # Apply stashed changes if we stashed
+    if [ "$STASHED" = true ]; then
+        echo "📦 Applying stashed changes..."
+        git stash pop > /dev/null 2>&1 || true
+        git add -A  # Re-stage after applying stash
+    fi
     
     # Commit changes
     echo "💾 Committing changes to develop..."
-    COMMIT_HASH=$(git commit -m "$COMMIT_MESSAGE" 2>&1 | grep -oE '^\[.* [a-f0-9]{7}\]' | sed 's/.* //' || git rev-parse HEAD)
+    git commit -m "$COMMIT_MESSAGE" > /dev/null 2>&1 || {
+        echo "⚠️  Commit failed or already committed"
+    }
     
-    if [ -z "$COMMIT_HASH" ]; then
-        # Try to get the commit hash another way
-        COMMIT_HASH=$(git rev-parse HEAD)
-    fi
+    # Get the commit hash
+    COMMIT_HASH=$(git rev-parse HEAD)
     
     echo "✅ Committed with hash: $COMMIT_HASH"
     
@@ -104,18 +136,28 @@ process_submodule() {
     
     # Cherry-pick the commit from develop
     echo "🍒 Cherry-picking commit $COMMIT_HASH from develop..."
-    if git cherry-pick $COMMIT_HASH 2>/dev/null; then
+    
+    # Check if commit message already exists in main (to avoid duplicate commits)
+    if git log --oneline --grep="$COMMIT_MESSAGE" | grep -q "$COMMIT_MESSAGE"; then
+        echo "✅ Commit with same message already exists in main branch"
+    elif git cherry-pick $COMMIT_HASH 2>&1; then
         echo "✅ Successfully cherry-picked to main"
     else
-        echo "⚠️  Cherry-pick had conflicts or commit already exists"
-        echo "   Checking if commit is already in main..."
-        if git log --oneline | grep -q "$COMMIT_HASH"; then
-            echo "✅ Commit already exists in main branch"
+        # Check if it's because the commit is already in the branch
+        if git merge-base --is-ancestor $COMMIT_HASH HEAD 2>/dev/null; then
+            echo "✅ Commit is already in main branch (ancestor)"
         else
-            echo "❌ Cherry-pick failed. You may need to resolve conflicts manually."
-            echo "   Run: cd $submodule_path && git cherry-pick $COMMIT_HASH"
-            cd - > /dev/null
-            return 1
+            echo "⚠️  Cherry-pick had conflicts or failed"
+            echo "   Attempting to continue..."
+            if git cherry-pick --continue 2>/dev/null; then
+                echo "✅ Cherry-pick completed after conflict resolution"
+            else
+                echo "❌ Cherry-pick failed. You may need to resolve conflicts manually."
+                echo "   Run: cd $submodule_path && git cherry-pick $COMMIT_HASH"
+                git cherry-pick --abort 2>/dev/null || true
+                cd - > /dev/null
+                return 1
+            fi
         fi
     fi
     
