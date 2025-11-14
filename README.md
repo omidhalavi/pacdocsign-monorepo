@@ -130,6 +130,23 @@ pacdocsign-monorepo/
 
 ## 🔧 Git Submodules Management
 
+### Basic Submodule Operations
+
+**Initialize all submodules:**
+```bash
+npm run submodule:init
+```
+
+**Update all submodules to latest:**
+```bash
+npm run submodule:update
+```
+
+**Check submodule status:**
+```bash
+npm run submodule:status
+```
+
 ### Adding New Submodules
 
 1. **Add a new submodule:**
@@ -142,21 +159,42 @@ pacdocsign-monorepo/
    git submodule update --init --recursive
    ```
 
-### Working with Submodules
+### Interactive Submodule Management
 
-**Update all submodules to latest:**
+**Interactive branch operations menu:**
 ```bash
-npm run submodule:update
+./branch-operations.sh
 ```
 
-**Check submodule status:**
-```bash
-npm run submodule:status
-```
+This script provides 12 different operations:
+1. List all branches across all submodules
+2. Switch all submodules to a specific branch
+3. Create new branch across all submodules
+4. Merge branch across all submodules
+5. Push changes to remote branches
+6. Pull latest changes from remote branches
+7. Show current branch status
+8. Show branch differences
+9. Stash changes across all submodules
+10. Apply stashed changes across all submodules
+11. Reset all submodules to a specific commit
+12. Show commit history across all submodules
 
-**Initialize submodules (if not done during clone):**
+### Direct Git Commands
+
+You can also use git submodule commands directly:
 ```bash
-npm run submodule:init
+# Initialize submodules
+git submodule update --init --recursive
+
+# Run command in each submodule
+git submodule foreach '<command>'
+
+# Show submodule status
+git submodule status
+
+# Update submodules to latest remote
+git submodule update --remote --recursive
 ```
 
 ### Submodule Workflow
@@ -217,6 +255,58 @@ npm run branch:main
 **Interactive branch operations:**
 ```bash
 npm run branch:operations
+```
+
+### Advanced Branch Operations
+
+**List all branches across submodules:**
+```bash
+npm run branch:list
+```
+
+**Switch all submodules to a specific branch:**
+```bash
+npm run branch:switch -- <branch-name>
+```
+
+**Create new branch across all submodules:**
+```bash
+npm run branch:create -- <new-branch-name>
+```
+
+**Merge branches across all submodules:**
+```bash
+npm run branch:merge -- <source-branch> <target-branch>
+```
+
+**Push current branch in all submodules:**
+```bash
+npm run branch:push
+```
+
+**Pull latest changes in all submodules:**
+```bash
+npm run branch:pull
+```
+
+**Stash changes across all submodules:**
+```bash
+npm run branch:stash
+```
+
+**Apply stashed changes across all submodules:**
+```bash
+npm run branch:stash:apply
+```
+
+**Show differences between branches:**
+```bash
+npm run branch:diff -- <branch1> <branch2>
+```
+
+**Show commit history for a branch:**
+```bash
+npm run branch:history -- <branch-name> <limit>
 ```
 
 ### Branch Workflow

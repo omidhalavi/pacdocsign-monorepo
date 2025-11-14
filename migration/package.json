@@ -1,0 +1,22 @@
+{
+  "name": "firebase-user-migration",
+  "version": "1.0.0",
+  "description": "Scripts for migrating PacDocSign users from MySQL to Firebase Auth",
+  "type": "module",
+  "scripts": {
+    "extract": "node mysql-user-extraction.js",
+    "import": "node firebase-import-script.js", 
+    "migrate": "npm run extract && npm run import",
+    "test-login": "node test-user-login.js"
+  },
+  "dependencies": {
+    "firebase-admin": "^12.0.0",
+    "mysql2": "^3.6.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
